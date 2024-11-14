@@ -1,13 +1,16 @@
 import feedparser
 import asyncio
 import logging
+import schedule
+import time
 from telegram import Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # Логування для відстеження помилок і подій
-##    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-#)
-#logger = logging.getLogger(__name__)
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 # Вказати токен Telegram
 TOKEN = '7846084048:AAH5TLUctSLeeVo3liWh-rmB5KsLwWh1_X8'
@@ -41,26 +44,32 @@ async def send_news(update, context):
         await update.message.reply_text(news)
 
 # Функція для надсилання новин у певну гілку групи
-async def post_news_to_group(update, context):
+async def post_news_to_group(context):
     news_list = get_news()
     for news in news_list:
         await context.bot.send_message(chat_id=CHAT_ID, text=news, message_thread_id=THREAD_ID)
-    await update.message.reply_text("Новини успішно надіслані у гілку групи!")
+    #await update.message.reply_text("Новини успішно надіслані у гілку групи!")
 
 # Функція для автоматичного постингу новин у гілку групи
-async def post_news_automatically(application):
-    news_list = get_news()
-    for news in news_list:
-        await application.bot.send_message(chat_id=CHAT_ID, text=news, message_thread_id=THREAD_ID)
+#async def post_news_automatically(application):
+    #news_list = get_news()
+    #for news in news_list:
+        #await application.bot.send_message(chat_id=CHAT_ID, text=news, message_thread_id=THREAD_ID)
 
-# Функція для запуску циклу автоматичного постингу
-async def automatic_posting_loop(application):
+# Налаштування автоматичного постингу кожні 2 хвилини
+def schedule_news_posting():
+    async def scheduled_task():
+        await post_news_to_group()
+
+    # Запуск кожні 2 хвилини
+    schedule.every(2).minutes.do(lambda: asyncio.create_task(scheduled_task()))
+    
     while True:
-        await post_news_automatically(application)
-        await asyncio.sleep(120)  # Затримка в 2 хвилини
+        schedule.run_pending()
+        time.sleep(1)
 
-# Головна асинхронна функція для запуску бота та автоматичного постингу
-async def main():
+# Головна функція для запуску бота та планувальника
+def main():
     # Створення бота з використанням класу Application
     application = Application.builder().token(TOKEN).build()
 
@@ -70,12 +79,11 @@ async def main():
     # Додаємо команду /post_news для надсилання новин у гілку групи
     application.add_handler(CommandHandler("post_news", post_news_to_group))
 
-    # Запускаємо автоматичний постинг у фоновому режимі
-    asyncio.create_task(automatic_posting_loop(application))
+    # Запуск бота
+    application.run_polling()
 
-    # Запускаємо polling для обробки команд
-    await application.run_polling()
+    # Запуск планувальника для автоматичного постингу новин
+    schedule_news_posting()
 
-# Запуск програми
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
