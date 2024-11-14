@@ -20,7 +20,12 @@ CHAT_ID = '590241563'
 
 # URL-адреси RSS-каналів
 RSS_FEEDS = [
-    'https://www.epravda.com.ua/rss/id_434/',
+    'http://k.img.com.ua/rss/ua/web.xml',
+    'https://itc.ua/ua/feed/',
+    'https://hi-tech.ua/uk/tag/shtuchnyj-intelekt/feed/',
+    'http://k.img.com.ua/rss/ua/technews.xml',
+    'http://k.img.com.ua/rss/ua/interiors.xml',
+    'https://ukranews.com/ua/rss-gen/Sub=323',
     #'https://rss.it.ua/feed.xml',          # IT новини
     #'https://rss.designnews.com/feed.xml'   # Новини дизайну
 ]
@@ -30,7 +35,7 @@ def get_news():
     news_list = []
     for feed_url in RSS_FEEDS:
         feed = feedparser.parse(feed_url)
-        for entry in feed.entries[:5]:  # Обмеження до 5 новин
+        for entry in feed.entries[:1]:  # Обмеження до 5 новин
             title = entry.title
             link = entry.link
             news_list.append(f"{title}\n{link}")
