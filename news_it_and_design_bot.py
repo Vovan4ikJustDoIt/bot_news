@@ -64,7 +64,8 @@ def schedule_news_posting(application):
     async def scheduled_task():
         await post_news_automatically(application)
 
-    schedule.every().day.at("00:02").do(lambda: asyncio.create_task(scheduled_task()))
+    schedule.every(2).minutes.do(lambda: asyncio.create_task(scheduled_task()))
+    #schedule.every().day.at("00:02").do(lambda: asyncio.create_task(scheduled_task()))
     
     while True:
         schedule.run_pending()
