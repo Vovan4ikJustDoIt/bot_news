@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 TOKEN = '7846084048:AAH5TLUctSLeeVo3liWh-rmB5KsLwWh1_X8'
 
 # Чат ID групи для публікації новин
-CHAT_ID = '-1002332086987'
+CHAT_ID = '590241563'
 
 # URL-адреси RSS-каналів
 RSS_FEEDS = [
