@@ -31,7 +31,7 @@ def get_news():
     news_list = []
     for feed_url in RSS_FEEDS:
         feed = feedparser.parse(feed_url)
-        for entry in feed.entries[:5]:  # Обмеження до 5 новин
+        for entry in feed.entries[:1]:  # Обмеження до 1 новин
             title = entry.title
             link = entry.link
             news_list.append(f"{title}\n{link}")
@@ -44,29 +44,11 @@ async def send_news(update, context):
         await update.message.reply_text(news)
 
 # Функція для надсилання новин у певну гілку групи
-async def post_news_to_group(context):
+async def post_news_to_group(update, context):
     news_list = get_news()
     for news in news_list:
         await context.bot.send_message(chat_id=CHAT_ID, text=news, message_thread_id=THREAD_ID)
-    #await update.message.reply_text("Новини успішно надіслані у гілку групи!")
-
-# Функція для автоматичного постингу новин у гілку групи
-#async def post_news_automatically(application):
-    #news_list = get_news()
-    #for news in news_list:
-        #await application.bot.send_message(chat_id=CHAT_ID, text=news, message_thread_id=THREAD_ID)
-
-# Налаштування автоматичного постингу кожні 2 хвилини
-def schedule_news_posting():
-    async def scheduled_task():
-        await post_news_to_group()
-
-    # Запуск кожні 2 хвилини
-    schedule.every(2).minutes.do(lambda: asyncio.create_task(scheduled_task()))
-    
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    await update.message.reply_text("Новини успішно надіслані у гілку групи!")
 
 # Головна функція для запуску бота та планувальника
 def main():
@@ -81,9 +63,6 @@ def main():
 
     # Запуск бота
     application.run_polling()
-
-    # Запуск планувальника для автоматичного постингу новин
-    schedule_news_posting()
 
 if __name__ == '__main__':
     main()
