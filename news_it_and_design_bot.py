@@ -72,7 +72,7 @@ def main():
     application.add_handler(CommandHandler("post_news", post_news_to_group))
 
     # Запуск асинхронного циклу автоматичного постингу
-    application.run_polling(wait=True)  # Запуск polling з очікуванням завершення
+    application.run_polling()  # Запуск polling з очікуванням завершення
     asyncio.run(automatic_posting_loop(application))  # Запуск циклу постингу
 
 if __name__ == '__main__':
