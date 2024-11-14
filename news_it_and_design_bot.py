@@ -1,8 +1,6 @@
-import feedparser
-import asyncio
-import logging
-import schedule
 import time
+import feedparser
+import logging
 from telegram import Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 
@@ -63,6 +61,10 @@ def main():
 
     # Запуск бота
     application.run_polling()
+
+    while True:
+        post_news_to_group()
+        time.sleep(60)
 
 if __name__ == '__main__':
     main()
