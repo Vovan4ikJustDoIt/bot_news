@@ -56,7 +56,11 @@ async def post_news_automatically(application):
 
 # Налаштування автоматичного постингу
 def schedule_news_posting(application):
-    schedule.every().day.at("09:00").do(lambda: asyncio.run(post_news_automatically(application)))
+    async def scheduled_task():
+        await post_news_automatically(application)
+
+    schedule.every().day.at("09:00").do(lambda: asyncio.create_task(scheduled_task()))
+    
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -73,7 +77,7 @@ def main():
     application.add_handler(CommandHandler("post_news", post_news_to_group))
 
     # Запуск бота
-    application.start()
+    application.run_polling()
 
     # Запуск планувальника для автоматичного постингу новин
     schedule_news_posting(application)
