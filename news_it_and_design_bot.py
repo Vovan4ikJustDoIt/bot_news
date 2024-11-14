@@ -15,8 +15,10 @@ logger = logging.getLogger(__name__)
 # Вказати токен Telegram
 TOKEN = '7846084048:AAH5TLUctSLeeVo3liWh-rmB5KsLwWh1_X8'
 
-# Чат ID групи для публікації новин
+# Чат ID групи та ID гілки для публікації новин
 CHAT_ID = '-1002332086987'
+THREAD_ID = '2'
+
 
 # URL-адреси RSS-каналів
 RSS_FEEDS = [
@@ -44,18 +46,18 @@ async def send_news(update, context):
     for news in news_list:
         await update.message.reply_text(news)
 
-# Функція для надсилання новин у групу
+# Функція для надсилання новин у гілку групи
 async def post_news_to_group(update, context):
     news_list = get_news()
     for news in news_list:
-        await context.bot.send_message(chat_id=CHAT_ID, text=news)
-    await update.message.reply_text("Новини успішно надіслані у групу!")
+        await context.bot.send_message(chat_id=CHAT_ID, text=news, message_thread_id=THREAD_ID)
+    await update.message.reply_text("Новини успішно надіслані  у гілку групи!")
 
-# Функція для автоматичного постингу новин
+# Функція для автоматичного постингу новин у гілку групи
 async def post_news_automatically(application):
     news_list = get_news()
     for news in news_list:
-        await application.bot.send_message(chat_id=CHAT_ID, text=news)
+        await application.bot.send_message(chat_id=CHAT_ID, text=news, message_thread_id=THREAD_ID)
 
 # Налаштування автоматичного постингу
 def schedule_news_posting(application):
