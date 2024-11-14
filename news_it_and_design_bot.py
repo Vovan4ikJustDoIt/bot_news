@@ -5,10 +5,9 @@ from telegram import Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # Логування для відстеження помилок і подій
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+##    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+#)
+#logger = logging.getLogger(__name__)
 
 # Вказати токен Telegram
 TOKEN = '7846084048:AAH5TLUctSLeeVo3liWh-rmB5KsLwWh1_X8'
@@ -60,8 +59,8 @@ async def automatic_posting_loop(application):
         await post_news_automatically(application)
         await asyncio.sleep(120)  # Затримка в 2 хвилини
 
-# Головна функція для запуску бота та циклу автоматичного постингу
-def main():
+# Головна асинхронна функція для запуску бота та автоматичного постингу
+async def main():
     # Створення бота з використанням класу Application
     application = Application.builder().token(TOKEN).build()
 
@@ -71,9 +70,12 @@ def main():
     # Додаємо команду /post_news для надсилання новин у гілку групи
     application.add_handler(CommandHandler("post_news", post_news_to_group))
 
-    # Запуск асинхронного циклу автоматичного постингу
-    application.run_polling()  # Запуск polling з очікуванням завершення
-    asyncio.run(automatic_posting_loop(application))  # Запуск циклу постингу
+    # Запускаємо автоматичний постинг у фоновому режимі
+    asyncio.create_task(automatic_posting_loop(application))
 
+    # Запускаємо polling для обробки команд
+    await application.run_polling()
+
+# Запуск програми
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
