@@ -20,8 +20,9 @@ CHAT_ID = '590241563'
 
 # URL-адреси RSS-каналів
 RSS_FEEDS = [
-    'https://rss.it.ua/feed.xml',          # IT новини
-    'https://rss.designnews.com/feed.xml'   # Новини дизайну
+    'https://www.epravda.com.ua/rss/id_434/',
+    #'https://rss.it.ua/feed.xml',          # IT новини
+    #'https://rss.designnews.com/feed.xml'   # Новини дизайну
 ]
 
 # Функція для збору новин із RSS-каналів
