@@ -69,5 +69,5 @@ def main():
         schedule.run_pending()
         time.sleep(1)
 
-if main == 'main':
+if __name__ == '__main__':
     main()
